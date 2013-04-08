@@ -13,6 +13,8 @@ gem 'base62', require: false
 gem 'multi_json', require: false
 gem 'oj', require: false
 
+gem 'rake', require: false
+
 group :development do
   gem 'shotgun'
 end

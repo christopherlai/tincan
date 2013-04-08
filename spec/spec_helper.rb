@@ -23,5 +23,10 @@ class IntegrationTest < MiniTest::Spec
     Tincan::Application
   end
 
+  def teardown
+    super
+    Tincan.redis.flushdb
+  end
+
   register_spec_type(/integration$/, self)
 end

@@ -6,4 +6,8 @@ module RequestMacros
   rescue MultiJson::LoadError
     raise "Failed to parse JSON:\n\n#{last_response.body}"
   end
+
+  def last_status
+    last_response.status
+  end
 end
