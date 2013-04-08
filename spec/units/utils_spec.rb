@@ -6,12 +6,16 @@ describe Tincan::Utils do
       Tincan::Utils.generate_code
     end
 
-    it 'must return a string' do
+    it 'returns a string' do
       subject.must_be_kind_of String
     end
 
-    it 'must return be 8 characters' do
+    it 'defaults to 8 characters' do
       subject.length.must_equal 8
+    end
+
+    it 'supports odd numbers of characters' do
+      Tincan::Utils.generate_code(7).length.must_equal 7
     end
   end
 end
