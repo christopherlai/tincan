@@ -7,16 +7,16 @@ Phone number provider.
 First, create a phone number verification:
 
     POST /v1/phone_numbers
-    message_format=seesaw://verify/CODE&redirect_uri=https:
+    phone_number=+14152751660&message_format=seesaw://verify/CODE&redirect_uri=https:
 
 Response:
 
 ``` json
 {
   "id": "1asdf",
-  "e164": "+12147093337",
+  "e164": "+14152751660",
   "country": "US",
-  "formatted": "(214) 709-3337",
+  "formatted": "(415) 275-1660",
   "verified": false
 }
 ```
@@ -36,9 +36,9 @@ Response:
 ``` json
 {
   "id": "1asdf",
-  "e164": "+12147093337",
+  "e164": "+14152751660",
   "country": "US",
-  "formatted": "(214) 709-3337",
+  "formatted": "(415) 275-1660",
   "verified": true
 }
 ```
@@ -54,9 +54,9 @@ Response:
 ``` json
 {
   "id": "1asdf",
-  "e164": "+12147093337",
+  "e164": "+14152751660",
   "country": "US",
-  "formatted": "(214) 709-3337",
+  "formatted": "(415) 275-1660",
   "verified": true
 }
 ```

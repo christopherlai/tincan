@@ -1,19 +1,42 @@
 require 'multi_json'
+require 'fakie'
 
 module Tincan
   class PhoneNumber
-    attr_reader :id, :e164, :country, :formatted
+    REDIS_KEY = 'phone-number'
+    CODE_REDIS_KEY = 'phone-number-code'
+
+    attr_reader :id, :e164, :country_code, :local_format, :verified_at
+    attr_accessor :code
+
+    def self.create!(e164)
+      # TODO: Make sure there aren't collisions
+      parsed = Fakie.parse(e164)
+      phone = new({
+        id: Utils.generate_code(32),
+        e164: parsed.e164,
+        country_code: parsed.region_code,
+        local_format: parsed.local_format
+      })
+
+      phone.save
+
+      # Store code
+      phone.code = Utils.generate_code(8)
+      Tincan.redis.hset(CODE_REDIS_KEY, phone.code, phone.id)
+      phone
+    end
 
     def self.find(id)
-      result = Tincan.redis.hget('phone-numbers', id)
+      result = Tincan.redis.hget(REDIS_KEY, id)
       return nil unless result
 
       new(MultiJson.load(result))
     end
 
     def initialize(hash)
-      %{id e164 country formatted}.each do |key|
-        set_instance_variable(":#{key}".to_sym, hash[key])
+      %w{id e164 country_code local_format}.each do |key|
+        instance_variable_set(:"@#{key}", hash[key.to_sym])
       end
 
       @verified_at = Time.at(hash['verified_at']) if hash['verified_at']
@@ -23,17 +46,32 @@ module Tincan
       verified_at && verified_at < Time.now.utc
     end
 
+    def verify!
+      @verified_at = Time.now.utc
+      save
+    end
+
     def as_json
       hash = {}
-      %{id e164 country formatted}.each do |key|
-        hash[key] = self.call(":#{key}".to_sym)
+
+      # Default attributes
+      %w{id e164 country_code local_format}.each do |key|
+        hash[key] = instance_variable_get(:"@#{key}")
       end
+
+      # Add `verified_at` as an integer
       hash['verified_at'] = verified_at ? verified_at.to_i : nil
+
+      # Return the hash
       hash
     end
 
     def to_json
       MultiJson.dump(as_json)
+    end
+
+    def save
+      Tincan.redis.hset(REDIS_KEY, id, to_json)
     end
   end
 end
