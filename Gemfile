@@ -7,6 +7,8 @@ gemspec
 gem 'rake', require: false
 gem 'oj', require: false
 
+gem 'twilio-rb', require: false
+
 group :development do
   gem 'shotgun', require: false
 end

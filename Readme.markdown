@@ -2,6 +2,17 @@
 
 Phone number provider.
 
+# Configuration
+
+Tincan delegates out the sending of SMS messages. Place the following code in an initializer
+with an implementation in order to use it.
+
+```ruby
+Tincan::SMS.sender = lambda do |phone_number, body|
+  puts "SMS sent to #{phone_number} - #{body}"
+end
+```
+
 ## Create
 
 First, create a phone number verification:

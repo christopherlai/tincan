@@ -9,6 +9,7 @@ module Tincan
     # Create phone number
     post '/v1/phone_numbers' do
       return unless phone_number = require_parameter(:phone_number)
+      return unless message_format = require_parameter(:message_format)
       begin
         phone = PhoneNumber.create!(phone_number)
       rescue Fakie::InvalidPhoneNumber
@@ -20,7 +21,7 @@ module Tincan
         return json(hash)
       end
 
-      # TODO: Send text message...
+      SMS.send(phone, message_format)
 
       status 201
       json phone

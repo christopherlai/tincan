@@ -2,11 +2,13 @@ require 'tincan/version'
 require 'tincan/utils'
 require 'tincan/phone_number'
 require 'tincan/application'
+require 'tincan/sms'
 
 require 'redis'
 require 'redis/namespace'
 
 module Tincan
+
   def self.redis
     # Set redis to nothing make the setter run and setup a default if it's nothing
     self.redis = {} unless defined? @@redis
@@ -37,4 +39,5 @@ private
     provider = ENV['REDIS_PROVIDER'] || 'REDIS_URL'
     ENV[provider]
   end
+
 end
