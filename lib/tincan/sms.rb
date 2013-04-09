@@ -1,5 +1,3 @@
-require 'twilio-rb'
-
 module Tincan
   class SMS
     class << self
