@@ -24,7 +24,7 @@ module Tincan
       SMS.send(phone, message_format)
 
       status 201
-      json phone
+      json phone.as_json
     end
 
     # Verify phone number
@@ -32,7 +32,7 @@ module Tincan
       return unless code = require_parameter(:code)
 
       if phone = PhoneNumber.verify_code!(code)
-        return json(phone)
+        return json(phone.as_json)
       end
 
       status 400
