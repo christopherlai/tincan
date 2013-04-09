@@ -21,7 +21,6 @@ Gem::Specification.new do |gem|
   gem.required_ruby_version = '>= 1.9.2'
   gem.add_dependency 'sinatra'
   gem.add_dependency 'sinatra-contrib'
-  gem.add_dependency 'puma'
   gem.add_dependency 'fakie'
   gem.add_dependency 'redis'
   gem.add_dependency 'redis-namespace'
