@@ -72,7 +72,7 @@ module Tincan
       end
 
       # Add `verified_at` as an integer
-      hash['verified_at'] = verified_at ? verified_at.to_i : nil
+      hash['verified_at'] = verified_at.to_i if verified_at
 
       # Return the hash
       hash
