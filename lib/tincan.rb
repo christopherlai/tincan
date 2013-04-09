@@ -1,3 +1,4 @@
+require 'tincan/version'
 require 'tincan/utils'
 require 'tincan/phone_number'
 require 'tincan/application'

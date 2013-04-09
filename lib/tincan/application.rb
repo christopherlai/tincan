@@ -27,7 +27,7 @@ module Tincan
     end
 
     # Verify phone number
-    post '/v1/verify' do
+    post '/v1/phone_numbers/verify' do
       return unless code = require_parameter(:code)
 
       if phone = PhoneNumber.verify_code!(code)

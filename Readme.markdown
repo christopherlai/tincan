@@ -30,7 +30,7 @@ This will send a text message with the following message:
 
 A client can now make the following request:
 
-    POST https://phone.seesaw.co/v1/verify
+    POST /v1/phone_numbers/verify
     code=aFdh79mD
 
 Response:
@@ -52,7 +52,7 @@ Now `verified_at` is set and the client knows this is a valid phone number.
 
 You can show a phone number token for a day to poll to see if it's verified. This will probably rarely be used since the request to verify it will be the only place this information is needed.
 
-    GET https://phone.seesaw.co/v1/phone_numbers/0H2r2U1W3s3I0M3K0k173j1s3y2i2r05
+    GET /v1/phone_numbers/0H2r2U1W3s3I0M3K0k173j1s3y2i2r05
 
 Response:
 
