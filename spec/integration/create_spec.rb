@@ -16,6 +16,7 @@ describe 'Create integration' do
   it 'requires a phone number' do
     post 'v1/phone_numbers'
     last_status.must_equal 400
+    last_json['error'].must_equal 'bad_request'
   end
 
   it 'requires a valid phone number' do
@@ -32,11 +33,13 @@ describe 'Create integration' do
   it 'handles invalid phone numbers' do
     post 'v1/phone_numbers', phone_number: '+1415275166', message_format: 'Click this: https://seesaw.co/CODE'
     last_status.must_equal 400
+    last_json['error'].must_equal 'invalid_phone_number'
   end
 
   it 'handles missing message formats' do
     post 'v1/phone_numbers', phone_number: '+14152751660'
     last_status.must_equal 400
+    last_json['error'].must_equal 'bad_request'
   end
 
   it 'sends an SMS'

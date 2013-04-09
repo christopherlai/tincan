@@ -8,8 +8,22 @@ module Tincan
 
     # Create phone number
     post '/v1/phone_numbers' do
-      return unless phone_number = require_parameter(:phone_number)
-      return unless message_format = require_parameter(:message_format)
+      unless phone_number = params[:phone_number]
+        status 400
+        return json({
+          error: 'bad_request',
+          error_description: "The `phone_number` parameter is required."
+        })
+      end
+
+      unless message_format = params[:message_format]
+        status 400
+        return json({
+          error: 'bad_request',
+          error_description: "The `message_format` parameter is required."
+        })
+      end
+
       begin
         phone = PhoneNumber.create!(phone_number)
       rescue Fakie::InvalidPhoneNumber
@@ -29,7 +43,13 @@ module Tincan
 
     # Verify phone number
     post '/v1/phone_numbers/verify' do
-      return unless code = require_parameter(:code)
+      unless code = params[:code]
+        status 400
+        return json({
+          error: 'bad_request',
+          error_description: "The `code` parameter is required."
+        })
+      end
 
       if phone = PhoneNumber.verify_code!(code)
         return json(phone.as_json)
@@ -53,21 +73,6 @@ module Tincan
         error: 'not_found',
         error_description: 'A phone_number was not found with this id.'
       })
-    end
-
-  private
-
-    def require_parameter(key)
-      unless value = params[key]
-        status 400
-        hash = {
-          error: 'bad_request',
-          error_description: "The `#{key}` parameter is required."
-        }
-        json hash
-        return nil
-      end
-      value
     end
   end
 end
