@@ -1,14 +1,14 @@
-require 'sinatra/main'
+require 'sinatra/base'
 require 'sinatra/json'
 require 'fakie/errors'
 
 module Tincan
-  class Application < Sinatra::Application
+  class Application < Sinatra::Base
     helpers Sinatra::JSON
 
     # Create phone number
     post '/v1/phone_numbers' do
-      unless phone_number = params[:phone_number]
+      unless phone_number = params['phone_number']
         status 400
         return json({
           error: 'bad_request',
@@ -16,7 +16,7 @@ module Tincan
         })
       end
 
-      unless message_format = params[:message_format]
+      unless message_format = params['message_format']
         status 400
         return json({
           error: 'bad_request',
@@ -43,7 +43,7 @@ module Tincan
 
     # Verify phone number
     post '/v1/phone_numbers/verify' do
-      unless code = params[:code]
+      unless code = params['code']
         status 400
         return json({
           error: 'bad_request',
@@ -73,6 +73,13 @@ module Tincan
         error: 'not_found',
         error_description: 'A phone_number was not found with this id.'
       })
+    end
+
+  private
+
+    def params
+      return super if request.get? || !request.content_type || request.content_type.index('application/json') != 0
+      @_params ||= MultiJson.load(request.env['rack.input'].read)
     end
   end
 end
