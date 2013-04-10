@@ -1,9 +1,7 @@
 module Tincan
   class SMS
     class << self
-      def sender=(val)
-        @sender = val
-      end
+      attr_accessor :sender
 
       def send(number, message)
         raise NoSmsSenderError.new unless @sender

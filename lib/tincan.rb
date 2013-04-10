@@ -8,6 +8,9 @@ require 'redis'
 require 'redis/namespace'
 
 module Tincan
+  def self.configure
+    yield self
+  end
 
   def self.redis
     # Set redis to nothing make the setter run and setup a default if it's nothing
@@ -30,6 +33,14 @@ module Tincan
     end
 
     @@redis = Redis::Namespace.new(namespace, redis: client)
+  end
+
+  def self.sms_sender
+    SMS.sender
+  end
+
+  def self.sms_sender=(sender)
+    SMS.sender = sender
   end
 
 private
