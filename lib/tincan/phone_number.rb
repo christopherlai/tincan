@@ -3,8 +3,9 @@ require 'fakie'
 
 module Tincan
   class PhoneNumber
-    REDIS_KEY = 'phone-number'
-    CODE_REDIS_KEY = 'phone-number-code'
+    REDIS_KEY_PREFIX = 'phone-number_'
+    CODE_REDIS_KEY_PREFIX = 'phone-number-code'
+    EXPIRATION = 86400 # one day of in-cache storage
 
     attr_reader :id, :e164, :country_code, :local_format, :verified_at
     attr_accessor :code
@@ -24,21 +25,23 @@ module Tincan
 
         # Store code
         phone.code = Utils.generate_code(8)
-        Tincan.redis.hset(CODE_REDIS_KEY, phone.code, phone.id)
+        key = "#{CODE_REDIS_KEY_PREFIX}#{phone.code}"
+        Tincan.redis.set(key, phone.id)
+        Tincan.redis.expire(key, EXPIRATION)
         phone
       end
 
       def find(id)
         return nil unless id
 
-        result = Tincan.redis.hget(REDIS_KEY, id)
+        result = Tincan.redis.get("#{REDIS_KEY_PREFIX}#{id}")
         return nil unless result
 
         new(MultiJson.load(result))
       end
 
       def verify_code!(code)
-        id = Tincan.redis.hget(CODE_REDIS_KEY, code)
+        id = Tincan.redis.get("#{CODE_REDIS_KEY_PREFIX}#{code}")
         return nil unless phone = find(id)
 
         phone.verify!
@@ -83,7 +86,9 @@ module Tincan
     end
 
     def save
-      Tincan.redis.hset(REDIS_KEY, id, to_json)
+      key = "#{REDIS_KEY_PREFIX}#{id}"
+      Tincan.redis.set(key, to_json)
+      Tincan.redis.expire(key, EXPIRATION)
     end
   end
 end
