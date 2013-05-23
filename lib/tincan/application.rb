@@ -1,11 +1,8 @@
 require 'sinatra/base'
-require 'sinatra/json'
 require 'fakie/errors'
 
 module Tincan
   class Application < Sinatra::Base
-    helpers Sinatra::JSON
-
     # Create phone number
     post '/v1/phone_numbers' do
       unless phone_number = params['phone_number']
@@ -76,6 +73,11 @@ module Tincan
     end
 
   private
+
+    def json(content)
+      content_type 'application/json'
+      MultiJson.dump(content)
+    end
 
     def params
       return super if request.get? || !request.content_type || request.content_type.index('application/json') != 0

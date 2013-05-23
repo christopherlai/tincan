@@ -13,7 +13,6 @@ end
 
 group :test do
   gem 'minitest'
-  gem 'minitest-wscolor'
   gem 'rack-test'
   gem 'fakeredis'
   gem 'simplecov', require: false
