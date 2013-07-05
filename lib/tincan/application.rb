@@ -4,7 +4,7 @@ require 'fakie/errors'
 module Tincan
   class Application < Sinatra::Base
     # Create phone number
-    post '/v1/phone_numbers' do
+    post '/' do
       unless phone_number = params['phone_number']
         status 400
         return json({
@@ -39,7 +39,7 @@ module Tincan
     end
 
     # Verify phone number
-    post '/v1/phone_numbers/verify' do
+    post '/verify' do
       unless code = params['code']
         status 400
         return json({
@@ -60,7 +60,7 @@ module Tincan
     end
 
     # Show phone number
-    get '/v1/phone_numbers/:id' do
+    get '/:id' do
       if phone = PhoneNumber.find(params[:id])
         return json(phone)
       end
